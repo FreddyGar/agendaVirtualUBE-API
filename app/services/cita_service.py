@@ -77,7 +77,8 @@ def update_cita(id_cita, data):
                 fecha_hora_inicio = %s,
                 fecha_hora_fin = %s,
                 estado = %s,
-                notas = %s
+                notas = %s,
+                email_solicitante = %s
             WHERE id_cita = %s
         """
         values = (
@@ -91,6 +92,7 @@ def update_cita(id_cita, data):
             data.get('fecha_hora_fin'),
             data.get('estado', 'Pendiente'),
             data.get('notas'),
+            data.get('email_solicitante'),
             id_cita
         )
         cursor.execute(sql, values)
