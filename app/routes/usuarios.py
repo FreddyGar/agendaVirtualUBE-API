@@ -253,6 +253,8 @@ def actualizar_usuario(id):
         description: Usuario no encontrado
     """
     data = request.get_json()
+    print("📥 Recibido en el PUT /usuarios:", data)
+
     if update_usuario(id, data):
         return jsonify({'message': 'Usuario actualizado'})
     return jsonify({'error': 'Usuario no encontrado'}), 404

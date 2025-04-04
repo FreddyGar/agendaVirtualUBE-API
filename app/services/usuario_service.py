@@ -56,27 +56,29 @@ def update_usuario(id_usuario, data):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    sql = """
+    campos_actualizables = ['nombre', 'apellido', 'email', 'contrasena', 'telefono', 'estado', 'id_perfil']
+    campos_sql = []
+    valores = []
+
+    for campo in campos_actualizables:
+        if campo in data and data[campo] is not None:
+            campos_sql.append(f"{campo} = %s")
+            valores.append(data[campo])
+
+    if not campos_sql:
+        return False  # No hay nada que actualizar
+
+    sql = f"""
         UPDATE usuarios
-        SET nombre = %s, apellido = %s, email = %s, contrasena = %s,
-            telefono = %s, estado = %s, id_perfil = %s
+        SET {', '.join(campos_sql)}
         WHERE id_usuario = %s
     """
+    valores.append(id_usuario)
 
-    values = (
-        data.get('nombre'),
-        data.get('apellido'),
-        data.get('email'),
-        data.get('contrasena'),
-        data.get('telefono'),
-        data.get('estado', 'Activo'),
-        data.get('id_perfil'),
-        id_usuario
-    )
-
-    cursor.execute(sql, values)
+    cursor.execute(sql, valores)
     conn.commit()
     actualizado = cursor.rowcount > 0
     cursor.close()
     conn.close()
     return actualizado
+
